@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #80e6d7;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    
+    .quiz-container {
+        background-color: #fff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 350px;
+        text-align: center;
+    }
+    
+    h1 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #3f51b5;
+    }
+    
+    .question {
+        margin-bottom: 15px;
+        font-weight: bold;
+        font-size: 18px;
+        color: #333;
+    }
+    
+    .options {
+        list-style-type: none;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+    
+    .options li {
+        margin-bottom: 10px;
+        font-size: 16px;
+    }
+    
+    input[type="radio"] {
+        margin-right: 10px;
+    }
+    
+    button {
+        padding: 12px 20px;
+        background-color: #3f51b5;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    
+    button:hover {
+        background-color: #303f9f;
+    }
+    
+    #results {
+        margin-top: 20px;
+        font-weight: bold;
+        font-size: 18px;
+        color: #333;
+    }
+</style>
+<body>
+    <div class="quiz-container">
+        <h1>Quiz</h1>
+        <div id="quiz"></div>
+        <button id="submit">Submit Quiz</button>
+        <div id="results"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+<script>
+    const quizData = [
+        {
+            question: "What is the capital of France?",
+            a: "Berlin",
+            b: "Madrid",
+            c: "Paris",
+            d: "Rome",
+            correct: "c"
+        },
+        {
+            question: "Who wrote 'Hamlet'?",
+            a: "Charles Dickens",
+            b: "William Shakespeare",
+            c: "Leo Tolstoy",
+            d: "Mark Twain",
+            correct: "b"
+        },
+        {
+            question: "What is the largest planet in our solar system?",
+            a: "Earth",
+            b: "Mars",
+            c: "Jupiter",
+            d: "Saturn",
+            correct: "c"
+        }
+    ];
+    
+    const quiz = document.getElementById('quiz');
+    const submitButton = document.getElementById('submit');
+    const results = document.getElementById('results');
+    
+    let currentQuestion = 0;
+    let score = 0;
+
+    function loadQuiz() {
+        const currentQuizData = quizData[currentQuestion];
+    
+        const questionElement = document.createElement('div');
+        questionElement.className = 'question';
+        questionElement.textContent = currentQuizData.question;
+    
+        const optionsElement = document.createElement('ul');
+        optionsElement.className = 'options';
+    
+        for (let key in currentQuizData) {
+            if (key !== 'question' && key !== 'correct') {
+                const optionElement = document.createElement('li');
+                optionElement.innerHTML = `
+                    <label>
+                        <input type="radio" name="answer" value="${key}">
+                        ${currentQuizData[key]}
+                    </label>
+                `;
+                optionsElement.appendChild(optionElement);
+            }
+        }
+
+        quiz.innerHTML = '';
+        quiz.appendChild(questionElement);
+        quiz.appendChild(optionsElement);
+    }
+
+    function evaluateQuiz() {
+        const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+        
+        if (selectedAnswer && selectedAnswer.value === quizData[currentQuestion].correct) {
+            score++;
+        }
+    
+        currentQuestion++;
+    
+        if (currentQuestion < quizData.length) {
+            loadQuiz();
+        } else {
+            displayResults();
+        }
+    }
+    
+    function displayResults() {
+        quiz.innerHTML = '';
+        results.textContent = `You scored ${score} out of ${quizData.length}!`;
+    }
+    
+    submitButton.addEventListener('click', evaluateQuiz);
+    loadQuiz();
+    
+    </script>
+</html>
